@@ -118,9 +118,14 @@
   .touch-btn:active {
     background: rgba(0, 255, 136, 0.35);
   }
-  .touch-move {
-    display: flex;
-    gap: 8px;
+  .touch-hint {
+    color: rgba(0, 255, 136, 0.4);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    pointer-events: none;
+    align-self: center;
+    padding-bottom: 4px;
   }
   .touch-fire {
     width: 80px;
@@ -154,10 +159,7 @@
 </div>
 
 <div id="touch-controls">
-  <div class="touch-move">
-    <button class="touch-btn" data-dir="left">&#9664;</button>
-    <button class="touch-btn" data-dir="right">&#9654;</button>
-  </div>
+  <div class="touch-hint">&#9664; swipe to move &#9654;</div>
   <button class="touch-btn touch-fire" data-action="fire">FIRE</button>
 </div>
 
@@ -318,7 +320,7 @@ const player = {
 
 // --- Input ---
 const keys = {};
-const touchState = { left: false, right: false, fire: false };
+const touchState = { fire: false };
 
 document.addEventListener('keydown', e => {
   keys[e.key.toLowerCase()] = true;
@@ -336,12 +338,10 @@ document.querySelectorAll('.touch-btn').forEach(btn => {
   const onStart = (e) => {
     e.preventDefault();
     ensureAudio();
-    if (dir) touchState[dir] = true;
     if (action === 'fire') touchState.fire = true;
   };
   const onEnd = (e) => {
     e.preventDefault();
-    if (dir) touchState[dir] = false;
     if (action === 'fire') touchState.fire = false;
   };
 
@@ -372,8 +372,8 @@ canvas.addEventListener('touchend', () => { touchX = null; });
 
 function isDown(action) {
   switch(action) {
-    case 'left': return keys['a'] || keys['arrowleft'] || touchState.left;
-    case 'right': return keys['d'] || keys['arrowright'] || touchState.right;
+    case 'left': return keys['a'] || keys['arrowleft'];
+    case 'right': return keys['d'] || keys['arrowright'];
     case 'up': return keys['w'] || keys['arrowup'];
     case 'down': return keys['s'] || keys['arrowdown'];
     case 'fire': return keys[' '] || touchState.fire;
